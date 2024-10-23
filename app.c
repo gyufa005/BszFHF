@@ -18,6 +18,14 @@
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
+//LCD-nek
+#include "segmentlcd.h"
+//UARTNAK
+#include "em_gpio.h"
+#include "em_device.h"
+#include "stdbool.h"
+//timernek
+#include "em_cmu.h"
 void app_init(void)
 {
 }

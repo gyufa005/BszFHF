@@ -1,0 +1,57 @@
+SegmentLCD driver kiegészítés a szegmensek különálló vezérléséhez és touch slider vezérléshez
+(Simplicity Studio 5-höz)
+--------------------------------------------------------------------------------
+0. Hozzunk létre egy üres projektet (Empty C Project)
+
+1. Másoljuk be az ebben a könyvtárban található .c és .h fájlokat a projekt 
+   főkönyvtárába (ahol a main.c is van).
+
+   Megjegyzés: az app.c egy demó alkalmazás, ezt értelem szerűen nem szükséges
+   bemásolni.
+
+2. Az LCD működtetéséhez adjuk hozzá a projekthez az alábbi szoftverkomponenseket:
+   - Platform / Peripheral / LCD
+   - Megjegyzés: ez az emlib LCD periféria kezelő komponense: em_lcd.c, em_lcd.h 
+   
+   Megjegyzés: ha ki szeretnénk próbálni a demó alkalmazást, akkor szükséges még
+   az alábbi komponens is:
+   - Platform / Utilities / Microsecond Delay
+   
+3. A touc slider működtetéséhet adjuk hozzá a projekthez az alábbi szoftverkomponenseket:
+ - Platform/Pheripheral/
+     * ACMP
+     * EBI
+     * LESENSE
+     * RTC
+     * VCMP
+ - Megjegyzés: ezek az emlib touch slider működtetéséhez szükséges komponensek: em_acmp.c, em_ebi.c, em_lesense.c, em_rtc.c, em_vcmp.c (fájlok fognak megjelenni a gecko_sdk_xxx/platform/emlib/src könyvtárban)
+
+
+
+
+Megjegyzés
+--------------------------------------------------------------------------------
+
+Mivel a SegmenLCD driver kiegészítés használja az alap SegmentLCD drivert is (az
+inicializációhoz), ezért szükség van ez utóbbira is.
+
+A Simplicity Studio 5 által telepített 32-bites MCU SDK-ban ugyan megtalálható a
+SegmentLCD driver, de szoftver komponensként nem tudjuk hozzáadni a projekthez.
+
+Az alap SegmentLCD driver a fájlrendszeren az alábbi fájlokban található:
+- <STUDIO_SDK_LOC>\hardware\kit\common\drivers\segmentlcd.c
+- <STUDIO_SDK_LOC>\hardware\kit\common\drivers\segmentlcd.h
+- <STUDIO_SDK_LOC>\hardware\kit\EFM32GG_STK3700\config\segmentlcdconfig.h
+
+A touch slider driver a fájlrendszeren az alábbi fájlokban található:
+- <STUDIO_SDK_LOC>\hardware\kit\common\drivers\caplesense.c
+- <STUDIO_SDK_LOC>\hardware\kit\common\drivers\caplesense.h
+- <STUDIO_SDK_LOC>\hardware\kit\EFM32GG_STK3700\config\caplesenseconfig.h
+
+
+Kényelmi okokból ezen fájlokat is ide másoltam, így nektek már nem kell 
+foglalkozni a megkeresésükkel.
+
+<STUDIO_SDK_LOC> az SDK telepítési útvonala, pl. [c:\Users\xyUser\SimplicityStudio\SDKs\gecko_sdk]
+
+
