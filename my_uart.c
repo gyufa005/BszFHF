@@ -12,6 +12,15 @@ USART_Tx(UART0, data[ww]);
 return len;
 }
 
+//Nem blokkoló UART RX függvény:
+int16_t UART_RXnb(USART_TypeDef *usart)
+{
+  int16_t retval = -1;
+  if(usart->STATUS & USART_STATUS_RXDATAV){
+      retval = (int16_t)usart->RXDATA;
+  }
+  return retval;
+}
 
 //gyak5 copy pastelve
 void diag_init(void)
