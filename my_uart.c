@@ -4,6 +4,9 @@
 #include "em_usart.h"
 #include "em_gpio.h"
 //getchar uartról kell majd
+
+int16_t character = 0;
+//Ezt használjuk a csekkoláshoz (J/B-e?)
 int _write(int file, char *data, int len) {
 int ww;
 for (ww=0; ww<len; ww++){
@@ -13,6 +16,7 @@ return len;
 }
 
 //Nem blokkoló UART RX függvény:
+//Nem használt
 int16_t UART_RXnb(USART_TypeDef *usart)
 {
   int16_t retval = -1;
@@ -21,9 +25,13 @@ int16_t UART_RXnb(USART_TypeDef *usart)
   }
   return retval;
 }
-
+void UART0_RX_IRQHandler(void){
+  character = USART_RxDataGet(UART0);
+  USART_Tx(UART0,character);
+  //USART_IntClear(UART0, USART_IF_RXDATAV);//Most kivételesen nem kell
+}
 //gyak5 copy pastelve
-void diag_init(void)
+void my_uart_init(void)
 {
 // Enable clock for GPIO
 CMU->HFPERCLKEN0 |= CMU_HFPERCLKEN0_GPIO;
@@ -51,4 +59,9 @@ GPIO_PinModeSet(gpioPortE, 1, gpioModeInput, 0);
 UART0->ROUTE |= UART_ROUTE_LOCATION_LOC1;
 // Select "Location 1" as the routing configuration
 UART0->ROUTE |= UART_ROUTE_TXPEN | UART_ROUTE_RXPEN;
+
+//Interrupt enable
+//UART0 vételi kérés megszakítás kérés felkonfigurálása
+  USART_IntEnable(UART0,USART_IF_RXDATAV);
+  NVIC_EnableIRQ(UART0_RX_IRQn);
 }

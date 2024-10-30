@@ -26,8 +26,11 @@
 #include "stdbool.h"
 //timernek
 #include "em_cmu.h"
+//UART
+#include "my_uart.h"
 void app_init(void)
 {
+  my_uart_init();
 }
 
 /***************************************************************************//**
@@ -35,4 +38,9 @@ void app_init(void)
  ******************************************************************************/
 void app_process_action(void)
 {
+  /*while(1){
+      int16_t ch = UART_RXnb(UART0);
+      if(ch!=-1)
+        USART_Tx(UART0);
+  }*/
 }
