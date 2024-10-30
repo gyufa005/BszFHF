@@ -28,6 +28,7 @@
 #include "em_cmu.h"
 //UART
 #include "my_uart.h"
+#include "sl_sleeptimer.h"
 void app_init(void)
 {
   my_uart_init();
