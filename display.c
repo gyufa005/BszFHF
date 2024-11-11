@@ -11,8 +11,11 @@
 
 //2 féle irány létezik --> horizontálisnál
 
-SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS][5]; //also szegmensek tombjet reprezentalo tomb
+SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
 typedef enum {HORIZONTAL,VERTICAL} Alignment;
+typedef enum {NOP,RIGHT,LEFT} DirectionX;
+typedef enum {NOP,UP,DOWN} DirectionY;
+/*
 typedef struct {
   uint8_t x;
   uint8_t y;
@@ -20,8 +23,14 @@ typedef struct {
 typedef struct {
   uint8_t segnum; //which segment is on
   Position s_position; //which position in the segment is on
-};
-
+};*/
+typedef struct {
+  Alignment alignment;
+  DirectionX directionx;
+  DirectionY directiony;
+  SegmentLCD_LowerCharSegments_TypeDef * const segmentpointer; //ez mindig a szegmens tömbre mutat
+  uint8_t segnum;
+}SnakePart;
 sl_sleeptimer_timer_handle_t timer;
 static void timeout_callback(sl_sleeptimer_timer_handle_t *handle,void *data);
 
@@ -33,4 +42,73 @@ timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
   //Mit csinál mintavételkor
 }
 //TODO : kirajzolás függvény, és ahhoz a változók struktúrája???
-void MoveHead
+void MovePart(SnakePart* snakepart){
+
+  //Allapotgep
+  if(snakepart->alignment==HORIZONTAL){
+  //Ha jobbra megy
+  if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->direction==RIGHT){
+      //set current segment to 0
+      snakepart->segmentpointer[snakepart->segnum]->a = 0;
+      //change part to new segment
+      snakepart->segnum++;
+      snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
+      //display new segment
+      snakepart->segmentpointer[snakepart->segnum]->a = 1;
+      return;}
+  if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->direction==RIGHT){
+      snakepart->segmentpointer[snakepart->segnum]->g = 0;
+      snakepart->segmentpointer[snakepart->segnum]->m = 0;
+
+      snakepart->segnum++;
+      snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
+
+      snakepart->segmentpointer[snakepart->segnum]->g = 1;
+      snakepart->segmentpointer[snakepart->segnum]->m = 1;
+      return;}
+  if(snakepart->segmentpointer[snakepart->segnum]->d&snakepart->direction==RIGHT){
+        snakepart->segmentpointer[snakepart->segnum]->d = 0;
+        snakepart->segnum++;
+        snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
+        snakepart->segmentpointer[snakepart->segnum]->d = 1;
+        return;}
+  //Ha balra megy
+   if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->direction==LEFT){
+        snakepart->segmentpointer[snakepart->segnum]->a = 0;
+        snakepart->segnum--;
+        snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
+        snakepart->segmentpointer[snakepart->segnum]->a = 1;
+        return;}
+   if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->direction==LEFT){
+        snakepart->segmentpointer[snakepart->segnum]->g = 0;
+        snakepart->segmentpointer[snakepart->segnum]->m = 0;
+        snakepart->segnum--;
+        snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
+        snakepart->segmentpointer[snakepart->segnum]->g = 1;
+        snakepart->segmentpointer[snakepart->segnum]->m = 1;
+        return;}
+   if(snakepart->segmentpointer[snakepart->segnum]->d&snakepart->direction==LEFT){
+        snakepart->segmentpointer[snakepart->segnum]->d = 0;
+        snakepart->segnum--;
+        snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
+        snakepart->segmentpointer[snakepart->segnum]->d = 1;
+        return;}
+  //Ha lefele megy
+   if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->direction==DOWN){
+           snakepart->segmentpointer[snakepart->segnum]->a = 0;
+           snakepart->segmentpointer;
+           return;}
+   if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->direction==DOWN){
+           snakepart->segmentpointer[snakepart->segnum]->g = 0;
+           snakepart->segmentpointer[snakepart->segnum]->m = 0;
+           snakepart->segmentpointer--;
+           return;}
+   if(snakepart->segmentpointer->d&snakepart->direction==DOWN){
+           snakepart->segmentpointer[snakepart->segnum]->d = 0;
+           snakepart->segmentpointer--;
+           return;}
+
+  }
+  for(int i=0; i<SEGMENT_LCD_NUM_OF_LOWER_CHARS;i++)
+
+}
