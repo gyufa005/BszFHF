@@ -15,9 +15,22 @@
 
 SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
 typedef enum {HORIZONTAL,VERTICAL} Alignment;
-typedef enum {NOPE,RIGHT,LEFT} DirectionX;
-typedef enum {NOPE,UP,DOWN} DirectionY;
+typedef enum {nonex,RIGHT,LEFT} DirectionX;
+typedef enum {noney,UP,DOWN} DirectionY;
 
+//számon lehet tartani ebben a struktúrában hogy mi világit
+typedef struct{
+  bool isOn[5][8];
+}segment_reg;
+void Invalidate(segment_reg * const display,SegmentLCD_LowerCharSegments_TypeDef* lowerCharSegments){
+  //If statementekkel kiertekelese a tombnek(mi vilagit)
+  for(int x =0;x<SEGMENT_LCD_NUM_OF_LOWER_CHARS;x++)
+    for(int y;y<4;y++){
+        if(display->isOn[y][x]){
+            //DoSomething
+    }
+}}
+/*
 uint16_t*koordinatatomb [5][8] = {
     {lowerCharSegments[0].a,&lowerCharSegments[1].a,&lowerCharSegments[2].a,&lowerCharSegments[3].a,&lowerCharSegments[4].a,&lowerCharSegments[5].a,&lowerCharSegments[6].a,NULL},
     {&lowerCharSegments[0].f,&lowerCharSegments[1].f,&lowerCharSegments[2].f,&lowerCharSegments[3].f,&lowerCharSegments[4].f,&lowerCharSegments[5].f,&lowerCharSegments[6].f,&lowerCharSegments[6].b},
@@ -25,7 +38,7 @@ uint16_t*koordinatatomb [5][8] = {
     {&lowerCharSegments[0].e,&lowerCharSegments[1].e,&lowerCharSegments[2].e,&lowerCharSegments[3].e,&lowerCharSegments[4].e,&lowerCharSegments[5].e,&lowerCharSegments[6].e,&lowerCharSegments[6].c},
     {&lowerCharSegments[0].d,&lowerCharSegments[1].d,&lowerCharSegments[2].d,&lowerCharSegments[3].d,&lowerCharSegments[4].d,&lowerCharSegments[5].d,&lowerCharSegments[6].d,NULL}
 };
-
+*/
 /*
 typedef struct {
   uint8_t x;
@@ -47,7 +60,6 @@ static void timeout_callback(sl_sleeptimer_timer_handle_t *handle,void *data);
 
 void display_init(){
   SegmentLCD_Init(false);
-  uint16_t pointer = lowerCharSegments[2].a;
 }
 timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
   //Mit csinál mintavételkor
@@ -136,3 +148,5 @@ void clearSegments() {
         lowerCharSegments[i].raw = 0;  //
     }
 }
+
+
