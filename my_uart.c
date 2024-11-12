@@ -3,9 +3,10 @@
 #include "em_cmu.h"
 #include "em_usart.h"
 #include "em_gpio.h"
+#include "sl_sleeptimer.h"
 //getchar uartról kell majd
 
-char lastcharacter = 0;
+volatile int lastcharacter = 0;
 //Ezt használjuk a csekkoláshoz (J/B-e?)
 int _write(int file, char *data, int len) {
 int ww;
@@ -65,3 +66,24 @@ UART0->ROUTE |= UART_ROUTE_TXPEN | UART_ROUTE_RXPEN;
   USART_IntEnable(UART0,USART_IF_RXDATAV);
   NVIC_EnableIRQ(UART0_RX_IRQn);
 }
+//TIMER
+
+timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
+  //Mit csinál mintavételkor
+
+  //vmit csinál az aktuális lastcharacter alapján
+  //...
+
+  //reseteli az irányt
+  lastcharacter = 0;
+}
+
+
+
+
+
+
+
+
+
+

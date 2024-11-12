@@ -15,8 +15,8 @@
 
 SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
 typedef enum {HORIZONTAL,VERTICAL} Alignment;
-typedef enum {nonex,RIGHT,LEFT} DirectionX;
-typedef enum {noney,UP,DOWN} DirectionY;
+typedef enum {nonex,R,L} DirectionX;
+typedef enum {noney,U,D} DirectionY;
 
 //számon lehet tartani ebben a struktúrában hogy mi világit
 typedef struct{
@@ -60,15 +60,7 @@ typedef struct {
 void display_init(){
   SegmentLCD_Init(false);
 }
-timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
-  //Mit csinál mintavételkor
 
-  //vmit csinál az aktuális lastcharacter alapján
-  //...
-
-  //reseteli az irányt
-  lastcharacter = NULL;
-}
 //TODO : kirajzolás függvény, és ahhoz a változók struktúrája???
 void MovePart(SnakePart* snakepart){
 /*
@@ -138,8 +130,8 @@ void MovePart(SnakePart* snakepart){
 
   }
   for(int i=0; i<SEGMENT_LCD_NUM_OF_LOWER_CHARS;i++)
-
-}*/
+*/
+}
 
 //Nem tudom a SegmentLCD_Init 0-z-e mindent.
 void clearSegments() {
