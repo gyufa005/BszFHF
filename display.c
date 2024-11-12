@@ -55,8 +55,7 @@ typedef struct {
   SegmentLCD_LowerCharSegments_TypeDef * const segmentpointer; //ez mindig a szegmens tömbre mutat
   uint8_t segnum;
 }SnakePart;
-sl_sleeptimer_timer_handle_t timer;
-static void timeout_callback(sl_sleeptimer_timer_handle_t *handle,void *data);
+
 
 void display_init(){
   SegmentLCD_Init(false);
