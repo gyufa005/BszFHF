@@ -9,12 +9,18 @@
 #include "segmentlcd.h"
 #include "segmentlcd_individual.h"
 
+
 //2 féle irány létezik --> horizontálisnál
 
 SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
 typedef enum {HORIZONTAL,VERTICAL} Alignment;
 typedef enum {NOP,RIGHT,LEFT} DirectionX;
 typedef enum {NOP,UP,DOWN} DirectionY;
+
+uint8_t*koordinatatombuint8_t [8][5] = {
+    {&lowerCharSegments[0].a,&lowerCharSegments[1].a,&lowerCharSegments[2].a,&lowerCharSegments[3].a,&lowerCharSegments[4].a,&lowerCharSegments[5].a,&lowerCharSegments[6].a}
+};
+
 /*
 typedef struct {
   uint8_t x;
@@ -43,11 +49,11 @@ timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
 }
 //TODO : kirajzolás függvény, és ahhoz a változók struktúrája???
 void MovePart(SnakePart* snakepart){
-
+/*
   //Allapotgep
   if(snakepart->alignment==HORIZONTAL){
   //Ha jobbra megy
-  if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->direction==RIGHT){
+  if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->directionx==RIGHT){
       //set current segment to 0
       snakepart->segmentpointer[snakepart->segnum]->a = 0;
       //change part to new segment
@@ -56,7 +62,7 @@ void MovePart(SnakePart* snakepart){
       //display new segment
       snakepart->segmentpointer[snakepart->segnum]->a = 1;
       return;}
-  if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->direction==RIGHT){
+  if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->directionx==RIGHT){
       snakepart->segmentpointer[snakepart->segnum]->g = 0;
       snakepart->segmentpointer[snakepart->segnum]->m = 0;
 
@@ -66,20 +72,20 @@ void MovePart(SnakePart* snakepart){
       snakepart->segmentpointer[snakepart->segnum]->g = 1;
       snakepart->segmentpointer[snakepart->segnum]->m = 1;
       return;}
-  if(snakepart->segmentpointer[snakepart->segnum]->d&snakepart->direction==RIGHT){
+  if(snakepart->segmentpointer[snakepart->segnum]->d&snakepart->directionx==RIGHT){
         snakepart->segmentpointer[snakepart->segnum]->d = 0;
         snakepart->segnum++;
         snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
         snakepart->segmentpointer[snakepart->segnum]->d = 1;
         return;}
   //Ha balra megy
-   if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->direction==LEFT){
+   if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->directionx==LEFT){
         snakepart->segmentpointer[snakepart->segnum]->a = 0;
         snakepart->segnum--;
         snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
         snakepart->segmentpointer[snakepart->segnum]->a = 1;
         return;}
-   if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->direction==LEFT){
+   if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->directionx==LEFT){
         snakepart->segmentpointer[snakepart->segnum]->g = 0;
         snakepart->segmentpointer[snakepart->segnum]->m = 0;
         snakepart->segnum--;
@@ -87,23 +93,23 @@ void MovePart(SnakePart* snakepart){
         snakepart->segmentpointer[snakepart->segnum]->g = 1;
         snakepart->segmentpointer[snakepart->segnum]->m = 1;
         return;}
-   if(snakepart->segmentpointer[snakepart->segnum]->d&snakepart->direction==LEFT){
+   if(snakepart->segmentpointer[snakepart->segnum]->d&snakepart->directionx==LEFT){
         snakepart->segmentpointer[snakepart->segnum]->d = 0;
         snakepart->segnum--;
         snakepart->segnum %= SEGMENT_LCD_NUM_OF_LOWER_CHARS;
         snakepart->segmentpointer[snakepart->segnum]->d = 1;
         return;}
   //Ha lefele megy
-   if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->direction==DOWN){
+   if(snakepart->segmentpointer[snakepart->segnum]->a&snakepart->directiony==DOWN){
            snakepart->segmentpointer[snakepart->segnum]->a = 0;
            snakepart->segmentpointer;
            return;}
-   if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->direction==DOWN){
+   if(snakepart->segmentpointer[snakepart->segnum]->g&snakepart->directiony==DOWN){
            snakepart->segmentpointer[snakepart->segnum]->g = 0;
            snakepart->segmentpointer[snakepart->segnum]->m = 0;
            snakepart->segmentpointer--;
            return;}
-   if(snakepart->segmentpointer->d&snakepart->direction==DOWN){
+   if(snakepart->segmentpointer->d&snakepart->directiony==DOWN){
            snakepart->segmentpointer[snakepart->segnum]->d = 0;
            snakepart->segmentpointer--;
            return;}
@@ -111,4 +117,11 @@ void MovePart(SnakePart* snakepart){
   }
   for(int i=0; i<SEGMENT_LCD_NUM_OF_LOWER_CHARS;i++)
 
+}*/
+
+//Nem tudom a SegmentLCD_Init 0-z-e mindent.
+void clearSegments() {
+    for (uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++) {
+        lowerCharSegments[i].raw = 0;  //
+    }
 }

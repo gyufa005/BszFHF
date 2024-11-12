@@ -5,7 +5,7 @@
 #include "em_gpio.h"
 //getchar uartról kell majd
 
-int16_t character = 0;
+char lastcharacter = 0;
 //Ezt használjuk a csekkoláshoz (J/B-e?)
 int _write(int file, char *data, int len) {
 int ww;
@@ -26,7 +26,7 @@ int16_t UART_RXnb(USART_TypeDef *usart)
   return retval;
 }
 void UART0_RX_IRQHandler(void){
-  character = USART_RxDataGet(UART0);
+  lastcharacter = USART_RxDataGet(UART0);
   USART_Tx(UART0,character);
   //USART_IntClear(UART0, USART_IF_RXDATAV);//Most kivételesen nem kell
 }
