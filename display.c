@@ -8,17 +8,22 @@
 #include "sl_sleeptimer.h"
 #include "segmentlcd.h"
 #include "segmentlcd_individual.h"
+#include "my_uart.h"
 
 
 //2 féle irány létezik --> horizontálisnál
 
 SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
 typedef enum {HORIZONTAL,VERTICAL} Alignment;
-typedef enum {NOP,RIGHT,LEFT} DirectionX;
-typedef enum {NOP,UP,DOWN} DirectionY;
+typedef enum {NOPE,RIGHT,LEFT} DirectionX;
+typedef enum {NOPE,UP,DOWN} DirectionY;
 
-uint8_t*koordinatatombuint8_t [8][5] = {
-    {&lowerCharSegments[0].a,&lowerCharSegments[1].a,&lowerCharSegments[2].a,&lowerCharSegments[3].a,&lowerCharSegments[4].a,&lowerCharSegments[5].a,&lowerCharSegments[6].a}
+uint16_t*koordinatatomb [5][8] = {
+    {lowerCharSegments[0].a,&lowerCharSegments[1].a,&lowerCharSegments[2].a,&lowerCharSegments[3].a,&lowerCharSegments[4].a,&lowerCharSegments[5].a,&lowerCharSegments[6].a,NULL},
+    {&lowerCharSegments[0].f,&lowerCharSegments[1].f,&lowerCharSegments[2].f,&lowerCharSegments[3].f,&lowerCharSegments[4].f,&lowerCharSegments[5].f,&lowerCharSegments[6].f,&lowerCharSegments[6].b},
+    {&lowerCharSegments[0].g,&lowerCharSegments[1].g,&lowerCharSegments[2].g,&lowerCharSegments[3].g,&lowerCharSegments[4].g,&lowerCharSegments[5].g,&lowerCharSegments[6].g,NULL},
+    {&lowerCharSegments[0].e,&lowerCharSegments[1].e,&lowerCharSegments[2].e,&lowerCharSegments[3].e,&lowerCharSegments[4].e,&lowerCharSegments[5].e,&lowerCharSegments[6].e,&lowerCharSegments[6].c},
+    {&lowerCharSegments[0].d,&lowerCharSegments[1].d,&lowerCharSegments[2].d,&lowerCharSegments[3].d,&lowerCharSegments[4].d,&lowerCharSegments[5].d,&lowerCharSegments[6].d,NULL}
 };
 
 /*
@@ -42,10 +47,16 @@ static void timeout_callback(sl_sleeptimer_timer_handle_t *handle,void *data);
 
 void display_init(){
   SegmentLCD_Init(false);
-  sl_sleeptimer_start_periodic_timer_ms(&timer,500,timeout_callback,NULL,0,SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
+  uint16_t pointer = lowerCharSegments[2].a;
 }
 timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
   //Mit csinál mintavételkor
+
+  //vmit csinál az aktuális lastcharacter alapján
+  //...
+
+  //reseteli az irányt
+  lastcharacter = NULL;
 }
 //TODO : kirajzolás függvény, és ahhoz a változók struktúrája???
 void MovePart(SnakePart* snakepart){

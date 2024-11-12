@@ -29,9 +29,20 @@
 //UART
 #include "my_uart.h"
 #include "sl_sleeptimer.h"
+timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
+  //Mit csinál mintavételkor
+
+  //vmit csinál az aktuális lastcharacter alapján
+  //...
+
+  //reseteli az irányt
+  lastcharacter = NULL;
+}
 void app_init(void)
 {
   my_uart_init();
+  display_init();
+  sl_sleeptimer_start_periodic_timer_ms(&timer,500,timeout_callback,NULL,0,SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
 }
 
 /***************************************************************************//**

@@ -27,7 +27,7 @@ int16_t UART_RXnb(USART_TypeDef *usart)
 }
 void UART0_RX_IRQHandler(void){
   lastcharacter = USART_RxDataGet(UART0);
-  USART_Tx(UART0,character);
+  USART_Tx(UART0,lastcharacter);
   //USART_IntClear(UART0, USART_IF_RXDATAV);//Most kivételesen nem kell
 }
 //gyak5 copy pastelve
