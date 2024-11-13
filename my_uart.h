@@ -1,10 +1,10 @@
-/*
+/*/*
  * my_uart.h
  *
  *  Created on: Oct 23, 2024
  *      Author: Fazekas Gyula
  */
-
+/*
 #ifndef MY_UART_H_
 #define MY_UART_H_
 

@@ -1,4 +1,4 @@
-#include "em_device.h"
+/*#include "em_device.h"
 #include "stdbool.h"
 #include "em_cmu.h"
 #include "em_usart.h"

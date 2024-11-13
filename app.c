@@ -27,12 +27,18 @@
 //timernek
 #include "em_cmu.h"
 //UART
-//#include "my_uart.h"
-#include "sl_sleeptimer.h"
 #include "display.h"
+#include "em_usart.h"
+
 
 #define GRID_WIDTH 8
 #define GRID_HEIGHT 5
+/***************************************************************************//**
+ * Globals
+ ******************************************************************************/
+volatile char lastcharacter;
+
+
 //UART
 void my_uart_init(void)
 {
@@ -68,21 +74,9 @@ UART0->ROUTE |= UART_ROUTE_TXPEN | UART_ROUTE_RXPEN;
   USART_IntEnable(UART0,USART_IF_RXDATAV);
   NVIC_EnableIRQ(UART0_RX_IRQn);
 }
+//timer interrupt handler
+void SysTickHandler(void){
 
-
-
-
-//Timer
-sl_sleeptimer_timer_handle_t timer;
-
- void timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
-  //Mit csinál mintavételkor
-
-  //vmit csinál az aktuális lastcharacter alapján
-  //...
-
-  //reseteli az irányt
-  lastcharacter = 0;
 }
 typedef struct {
   uint8_t x;
@@ -124,7 +118,6 @@ void app_init(void)
   my_uart_init();
   display_init();
   initsnek();
-  sl_sleeptimer_start_periodic_timer_ms(&timer,500,timeout_callback,NULL,0,SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
 
 }
 
@@ -133,9 +126,5 @@ void app_init(void)
  ******************************************************************************/
 void app_process_action(void)
 {
-  /*while(1){
-      int16_t ch = UART_RXnb(UART0);
-      if(ch!=-1)
-        USART_Tx(UART0);
-  }*/
+
 }
