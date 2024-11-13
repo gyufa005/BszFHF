@@ -1,4 +1,6 @@
-/*#include "em_device.h"
+/*
+ *
+#include "em_device.h"
 #include "stdbool.h"
 #include "em_cmu.h"
 #include "em_usart.h"
@@ -78,7 +80,7 @@ timeout_callback(sl_sleeptimer_timer_handle_t * handle, void * data){
   lastcharacter = 0;
 }
 
-
+*/
 
 
 

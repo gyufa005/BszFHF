@@ -20,6 +20,7 @@
  ******************************************************************************/
 //LCD-nek
 #include "segmentlcd.h"
+#include "segmentlcd_individual.h"
 //UARTNAK
 #include "em_gpio.h"
 #include "em_device.h"
@@ -27,19 +28,44 @@
 //timernek
 #include "em_cmu.h"
 //UART
-#include "display.h"
+//#include "display.h"
 #include "em_usart.h"
+#include <stdlib.h>
+#include "sl_sleeptimer.h"
 
 
 #define GRID_WIDTH 8
 #define GRID_HEIGHT 5
 /***************************************************************************//**
- * Globals
+ * Typedefek, Enumok
  ******************************************************************************/
-volatile char lastcharacter;
+typedef struct {
+  uint8_t x;
+  uint8_t y;
+}Position_t;
 
+typedef enum {RIGHT,DOWN,LEFT,UP} Direction;
+//Snek
+typedef struct {
+uint8_t snakelength;
+Position_t  snakeparts[37]; //ennél biztos nem hosszabb
+Direction dir;//fejének az iránya
+}Snake;
 
-//UART
+/***************************************************************************//**
+ * Initialization
+ ******************************************************************************/
+
+void initsnek(Snake* snake){
+  snake->snakelength = 1;
+  snake->snakeparts[0].x = 0;
+  snake->snakeparts[0].y = 2;
+  snake->dir = RIGHT;
+}
+
+/***************************************************************************//**
+ * UART
+ ******************************************************************************/
 void my_uart_init(void)
 {
 // Enable clock for GPIO
@@ -74,50 +100,119 @@ UART0->ROUTE |= UART_ROUTE_TXPEN | UART_ROUTE_RXPEN;
   USART_IntEnable(UART0,USART_IF_RXDATAV);
   NVIC_EnableIRQ(UART0_RX_IRQn);
 }
-//timer interrupt handler
-void SysTickHandler(void){
-
-}
-typedef struct {
-  uint8_t x;
-  uint8_t y;
-}Position_t;
-typedef struct {
-  Position_t pos;
-  uint16_t segments;
-}Entity_t;
+/***************************************************************************//**
+ * Timer
+ ******************************************************************************/
+volatile char lastcharacter = '0';
+sl_sleeptimer_timer_handle_t timer;
+static void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data);
 
 
-
-typedef enum {RIGHT,DOWN,LEFT,UP} Snek_Direction;
-//Snek
-Entity_t snake[16]; //mondj legyen 16 a max hossz
-uint8_t snakelength;
-Snek_Direction dir;
+/***************************************************************************//**
+ * Globals
+ ******************************************************************************/
+SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
+SegmentLCD_UpperCharSegments_TypeDef upperCharSegments[SEGMENT_LCD_NUM_OF_UPPER_CHARS];
+volatile char lastcharacter;
 Position_t food;
-void initsnek(void){
-  snake[0].pos.x = 0;
-  snake[0].pos.y = 3;
-  snakelength = 1;
-  Snek_Direction dir = RIGHT;
+Snake snake;
+uint8_t score = 0;
+
+
+/***************************************************************************//**
+ * Functions
+ ******************************************************************************/
+void ClearDisplay(){
+  //Lower Display clear
+      for (uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++) {
+          lowerCharSegments[i].raw = 0;  //
+      }
+  //Upper Display clear
+      for (uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_UPPER_CHARS; i++) {
+                upperCharSegments[i].raw = 0;  //
 }
+
+void snakedirection(char newdir){
+  //head direction
+  if (newdir == "j")
+    {
+     snake.dir++;
+     snake.dir%=4;
+    }
+  if(newdir == "b")
+    {
+      snake.dir--;
+      snake.dir%=4;
+    }
+  return;
+}
+
 void placeFood() {
     food.y = rand() % GRID_HEIGHT;
-    if(food.y==1||food.y==3)    //ha fuggoleges
-      food.x = rand() % GRID_WIDTH;
-    else
-      food.x = rand() % GRID_WIDTH-1;
+      if(food.y==1||food.y==3)    //ha fuggoleges
+        food.x = rand() % GRID_WIDTH;
+      else
+        food.x = rand() % GRID_WIDTH-1;
 
 }
 bool isFoodEaten() {
-    return snake[0].pos.x == food.x && snake[0].pos.y == food.y;
+  bool retval;
+  retval =(snake.snakeparts[0].x == food.x) && (snake.snakeparts[0].y == food.y);
+  return retval;
+}
+void KigyoKigyozas(){
+
+      switch (snake.dir){
+        case RIGHT:
+          {
+            snake.snakeparts[0].x++;break;
+          }
+        case DOWN:
+          {
+            snake.snakeparts[0].y++;break;
+          }
+        case LEFT:
+          {
+            snake.snakeparts[0].x--;break;
+          }
+        case UP:
+          {
+            snake.snakeparts[0].y--;break;
+          }}
+      //Meg kell nézni, hogy ha a fej eléri a szélét a pályának, akkor
+      if(snake.snakeparts[0].y==1||snake.snakeparts[0].y==3)
+        snake.snakeparts[0].x%=8;
+      else
+        snake.snakeparts[0].x%=7;
+      snake.snakeparts[0].y%=5;
+
+      //Ha hosszabbodik
+      if(isFoodEaten())
+                  {
+                    snake.snakeparts[snake.snakelength]=snake.snakeparts[snake.snakelength-1];
+                    snake.snakelength++;
+                    for(int i = snake.snakelength-2;i>0;i--)
+                                  {
+                            snake.snakeparts[i]=snake.snakeparts[i-1];
+                        }
+                    score++;
+                  }
+      else
+                  for(int i = snake.snakelength-1;i>0;i--)
+                                {
+                                    snake.snakeparts[i]=snake.snakeparts[i-1];
+                                }
+
+
+
 }
 
 void app_init(void)
 {
   my_uart_init();
-  display_init();
-  initsnek();
+  SegmentLCD_Init(false);
+  initsnek(&snake);
+  sl_sleeptimer_start_periodic_timer_ms(&timer, 500, app_timeout_callback, NULL, 0, SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
 
 }
 
@@ -127,4 +222,18 @@ void app_init(void)
 void app_process_action(void)
 {
 
+}
+/***************************************************************************//**
+ * Interrupt functions.
+ ******************************************************************************/
+//ezt csinálja minden egyes ticken
+void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
+  snakedirection(lastcharacter);
+  lastcharacter = '0';
+  KigyoKigyozas();
+}
+void UART0_RX_IRQHandler(void){
+  lastcharacter = USART_RxDataGet(UART0);
+  USART_Tx(UART0,lastcharacter);
+  //USART_IntClear(UART0, USART_IF_RXDATAV);//Most kivételesen nem kell
 }
