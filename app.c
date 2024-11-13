@@ -131,6 +131,7 @@ void ClearDisplay(){
       for (uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_UPPER_CHARS; i++) {
                 upperCharSegments[i].raw = 0;  //
 }
+}
 
 void snakedirection(char newdir){
   //head direction
@@ -159,6 +160,13 @@ bool isFoodEaten() {
   bool retval;
   retval =(snake.snakeparts[0].x == food.x) && (snake.snakeparts[0].y == food.y);
   return retval;
+}
+bool isBitingItself(){
+  for(int i=0;i<snake.snakelength;i++){
+      if(snake.snakeparts[0]==snake.snakeparts[i])
+        return true;
+  }
+  return false;
 }
 void KigyoKigyozas(){
 

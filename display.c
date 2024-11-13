@@ -1,9 +1,11 @@
 /*
+
+/*
  * display.c
  *
  *  Created on: Oct 30, 2024
  *      Author: Fazekas Gyula
- */
+ *
 #include "em_device.h"
 #include "sl_sleeptimer.h"
 #include "segmentlcd.h"
@@ -47,7 +49,7 @@ typedef struct {
 typedef struct {
   uint8_t segnum; //which segment is on
   Position s_position; //which position in the segment is on
-};*/
+};*
 typedef struct {
   Alignment alignment;
   DirectionX directionx;
@@ -130,7 +132,7 @@ void MovePart(SnakePart* snakepart){
 
   }
   for(int i=0; i<SEGMENT_LCD_NUM_OF_LOWER_CHARS;i++)
-*/
+*
 }
 
 //Nem tudom a SegmentLCD_Init 0-z-e mindent.
@@ -139,5 +141,5 @@ void clearSegments() {
         lowerCharSegments[i].raw = 0;  //
     }
 }
-
+*/
 
