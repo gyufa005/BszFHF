@@ -125,14 +125,14 @@ int isDotOn=0;
 
 void snakedirection(char newdir){
   //head direction
-  if (newdir == "j")
+  if (newdir == 'j')
     {
-     snake.dir++;
+     snake.dir--;
      snake.dir%=4;
     }
-  if(newdir == "b")
+  if(newdir == 'b')
     {
-      snake.dir--;
+      snake.dir++;
       snake.dir%=4;
     }
   return;
