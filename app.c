@@ -322,16 +322,16 @@ void DisplayPos(Position_t pos){
   else {
       switch(pos.y){
         case 0:
-                lowerCharSegments[pos.x].d = true; break;
+                lowerCharSegments[pos.x].a = true; break;
               case 1:
-                lowerCharSegments[pos.x].e = true; break;
+                lowerCharSegments[pos.x].f = true; break;
               case 2:
                 lowerCharSegments[pos.x].g = true;
                 lowerCharSegments[pos.x].m = true; break;
               case 3:
-                lowerCharSegments[pos.x].f = true; break;
+                lowerCharSegments[pos.x].e = true; break;
               case 4:
-                lowerCharSegments[pos.x].a = true; break;
+                lowerCharSegments[pos.x].d = true; break;
               default: break;
       }
   }
@@ -366,7 +366,6 @@ void app_process_action(void)
  ******************************************************************************/
 //ezt csinálja minden egyes ticken
 void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
-  HasReceivedDirChange = false;
   if(isBitingItself())
     {
       EndOfGame();
