@@ -50,6 +50,7 @@ typedef struct {
 uint8_t snakelength;
 Position_t  snakeparts[37]; //ennél biztos nem hosszabb
 Direction dir;//fejének az iránya
+Direction prevdir;//mozgás logikához
 }Snake;
 
 /***************************************************************************//**
@@ -61,6 +62,7 @@ void initsnek(Snake* snake){
   snake->snakeparts[0].x = 0;
   snake->snakeparts[0].y = 2;
   snake->dir = RIGHT;
+  snake->prevdir = RIGHT;
 }
 
 /***************************************************************************//**
@@ -124,6 +126,7 @@ int isDotOn=0;
  ******************************************************************************/
 
 void snakedirection(char newdir){
+  snake.prevdir=snake.dir;
   //head direction
   if (newdir == 'j')
     {
@@ -159,7 +162,7 @@ bool isBitingItself(){
   return false;
 }
 void KigyoKigyozas(){
-
+    if(snake.dir==snake.prevdir){
       switch (snake.dir){
         case RIGHT:
           {
@@ -167,7 +170,7 @@ void KigyoKigyozas(){
           }
         case DOWN:
           {
-            snake.snakeparts[0].y++;break;
+            snake.snakeparts[0].y+=2;break;
           }
         case LEFT:
           {
@@ -175,13 +178,63 @@ void KigyoKigyozas(){
           }
         case UP:
           {
-            snake.snakeparts[0].y--;break;
-          }}
+            snake.snakeparts[0].y-=2;break;
+          }
+      }
+    }
+    if(snake.prevdir==RIGHT){//
+      if(snake.dir==UP){//->^
+          snake.snakeparts[0].x++;
+          snake.snakeparts[0].y--;
+      }
+      if(snake.dir==DOWN){//->ˇ
+          snake.snakeparts[0].x++;
+          snake.snakeparts[0].y++;
+    }
+    }
+    if(snake.prevdir==DOWN){
+        if(snake.dir==LEFT){//ˇ<-
+            snake.snakeparts[0].x--;
+            snake.snakeparts[0].y++;
+        }
+        if(snake.dir==RIGHT){//ˇ->
+            snake.snakeparts[0].x++;
+            snake.snakeparts[0].y++;
+        }
+    }
+    if(snake.prevdir==LEFT){
+        if(snake.dir==DOWN){//<-ˇ
+            snake.snakeparts[0].x--;
+            snake.snakeparts[0].y++;
+        }
+        if(snake.dir==UP){//<-^
+            snake.snakeparts[0].x--;
+            snake.snakeparts[0].y--;
+        }
+    }
+    if(snake.prevdir==UP){
+        if(snake.dir==LEFT){//^<-
+            snake.snakeparts[0].x--;
+            snake.snakeparts[0].y--;
+        }
+        if(snake.dir==RIGHT){//^->
+            snake.snakeparts[0].x++;
+            snake.snakeparts[0].y--;
+        }
+    }
+
       //Meg kell nézni, hogy ha a fej eléri a szélét a pályának, akkor
-      if(snake.snakeparts[0].y==1||snake.snakeparts[0].y==3)
-        snake.snakeparts[0].x%=8;
-      else
-        snake.snakeparts[0].x%=7;
+      if(!(snake.snakeparts[0].y==1||snake.snakeparts[0].y==3))//Ha vizszintesen van
+        {
+        if(snake.snakeparts[0].x==7)
+          {
+            snake.snakeparts[0].x=0;
+          }
+        if(snake.snakeparts[0].x==255)//alulcsordul mert unsigned
+          {
+            snake.snakeparts[0].x=6;
+          }
+        }
       snake.snakeparts[0].y%=5;
 
       //Ha hosszabbodik
