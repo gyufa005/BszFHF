@@ -204,17 +204,26 @@ void KigyoKigyozas(){
                             snake.snakeparts[i]=snake.snakeparts[i-1];
                         }
                     score++;
+                    placeFood();
                   }
       else
                   for(int i = snake.snakelength-1;i>0;i--)
                                 {
                                     snake.snakeparts[i]=snake.snakeparts[i-1];
                                 }
+}
+/***************************************************************************//**
+ * Display functions.
+ ******************************************************************************/
 
 
+void EndOfGame(){
+  //Tizedes pontok villognak.
 
 }
-
+void DisplayScore(int score){
+  SegmentLCD_Number(score);
+}
 void app_init(void)
 {
   my_uart_init();
@@ -236,9 +245,15 @@ void app_process_action(void)
  ******************************************************************************/
 //ezt csinálja minden egyes ticken
 void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
-  snakedirection(lastcharacter);
-  lastcharacter = '0';
-  KigyoKigyozas();
+  if(isBitingItself())
+    {
+      EndOfGame();
+    }
+  else{
+      snakedirection(lastcharacter);
+      lastcharacter = '0';
+      KigyoKigyozas();
+  }
 }
 void UART0_RX_IRQHandler(void){
   lastcharacter = USART_RxDataGet(UART0);
