@@ -187,7 +187,7 @@ void KigyoKigyozas()
     if(snake.prevdir==RIGHT)
       {//
       if(snake.dir==UP){//->^
-          if(!(snake.snakeparts[0].x==6))
+          //if(!(snake.snakeparts[0].x==6))
           {
               snake.snakeparts[0].x++;
           }
@@ -195,7 +195,7 @@ void KigyoKigyozas()
           snake.snakeparts[0].y--;
       }
       if(snake.dir==DOWN){//->ˇ
-          if(!(snake.snakeparts[0].x==6))
+          //if(!(snake.snakeparts[0].x==6))
           {
               snake.snakeparts[0].x++;
           }
@@ -226,7 +226,6 @@ void KigyoKigyozas()
             snake.snakeparts[0].y--;
         }
         if(snake.dir==RIGHT){//^->
-            snake.snakeparts[0].x++;
             snake.snakeparts[0].y--;
         }
     }
