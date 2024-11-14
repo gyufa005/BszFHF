@@ -152,7 +152,7 @@ bool isFoodEaten() {
   return retval;
 }
 bool isBitingItself(){
-  for(int i=0;i<snake.snakelength;i++){
+  for(int i=1;i<snake.snakelength;i++){
       if(snake.snakeparts[0].y==snake.snakeparts[i].y&&snake.snakeparts[0].x==snake.snakeparts[i].x)
         return true;
   }
@@ -261,7 +261,7 @@ void DisplayPos(Position_t pos){
   }
 }
 void Display(){
-  DiplayScore(score);
+  DisplayScore(score);
   DisplayPos(food);
   for(int i=0;i<snake.snakelength;i++){
       DisplayPos(snake.snakeparts[i]);
@@ -296,6 +296,7 @@ void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
       snakedirection(lastcharacter);
       lastcharacter = '0';
       KigyoKigyozas();
+      Display();
   }
 }
 void UART0_RX_IRQHandler(void){
