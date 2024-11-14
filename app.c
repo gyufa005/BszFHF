@@ -161,8 +161,10 @@ bool isBitingItself(){
   }
   return false;
 }
-void KigyoKigyozas(){
-    if(snake.dir==snake.prevdir){
+void KigyoKigyozas()
+{
+    if(snake.dir==snake.prevdir)
+      {
       switch (snake.dir){
         case RIGHT:
           {
@@ -182,13 +184,21 @@ void KigyoKigyozas(){
           }
       }
     }
-    if(snake.prevdir==RIGHT){//
+    if(snake.prevdir==RIGHT)
+      {//
       if(snake.dir==UP){//->^
-          snake.snakeparts[0].x++;
+          if(!(snake.snakeparts[0].x==6))
+          {
+              snake.snakeparts[0].x++;
+          }
+
           snake.snakeparts[0].y--;
       }
       if(snake.dir==DOWN){//->ˇ
-          snake.snakeparts[0].x++;
+          if(!(snake.snakeparts[0].x==6))
+          {
+              snake.snakeparts[0].x++;
+          }
           snake.snakeparts[0].y++;
     }
     }
@@ -204,11 +214,9 @@ void KigyoKigyozas(){
     }
     if(snake.prevdir==LEFT){
         if(snake.dir==DOWN){//<-ˇ
-            snake.snakeparts[0].x--;
             snake.snakeparts[0].y++;
         }
         if(snake.dir==UP){//<-^
-            snake.snakeparts[0].x--;
             snake.snakeparts[0].y--;
         }
     }
@@ -230,12 +238,19 @@ void KigyoKigyozas(){
           {
             snake.snakeparts[0].x=0;
           }
-        if(snake.snakeparts[0].x==255)//alulcsordul mert unsigned
+        if(snake.snakeparts[0].x==0xFF)//alulcsordul mert unsigned
           {
             snake.snakeparts[0].x=6;
           }
         }
-      snake.snakeparts[0].y%=5;
+      if(snake.snakeparts[0].y==5)
+        {
+          snake.snakeparts[0].y=1;
+        }
+      if(snake.snakeparts[0].y==0xFF)
+        {
+          snake.snakeparts[0].y=3;
+        }
 
       //Ha hosszabbodik
       if(isFoodEaten())
