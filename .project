@@ -74,6 +74,11 @@
 			<locationURI>STUDIO_SDK_LOC/platform/common/src/sl_assert.c</locationURI>
 		</link>
 		<link>
+			<name>gecko_sdk_4.4.4/platform/emlib/inc/em_adc.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/emlib/inc/em_adc.h</locationURI>
+		</link>
+		<link>
 			<name>gecko_sdk_4.4.4/platform/emlib/inc/em_assert.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/emlib/inc/em_assert.h</locationURI>
@@ -187,6 +192,11 @@
 			<name>gecko_sdk_4.4.4/platform/emlib/inc/sli_em_cmu.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/emlib/inc/sli_em_cmu.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.4/platform/emlib/src/em_adc.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/emlib/src/em_adc.c</locationURI>
 		</link>
 		<link>
 			<name>gecko_sdk_4.4.4/platform/emlib/src/em_cmu.c</name>
