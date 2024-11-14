@@ -170,6 +170,7 @@ bool isBitingItself(){
 }
 void KigyoKigyozas()
 {
+  //Másolat ha kéne felfűzni új elemet
     Position_t tailtarget = snake.snakeparts[snake.snakelength-1];
   //Azonos irany
     if(snake.dir==snake.prevdir)
@@ -262,7 +263,7 @@ void KigyoKigyozas()
                   }
 
       }
-//X lépett
+//Fej lépett
 
 
       //Ha hosszabbodott máshogy kell léptetni a többi részét
@@ -361,7 +362,7 @@ void app_init(void)
   my_uart_init();
   SegmentLCD_Init(false);
   initsnek(&snake);
-  sl_sleeptimer_start_periodic_timer_ms(&timer, 400, app_timeout_callback, NULL, 0, SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
+  sl_sleeptimer_start_periodic_timer_ms(&timer, 500, app_timeout_callback, NULL, 0, SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
   //Display();
 
 }
@@ -393,7 +394,6 @@ void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
 void UART0_RX_IRQHandler(void){
 
       lastcharacter = USART_RxDataGet(UART0);
-      USART_Tx(UART0,lastcharacter);
-  //USART_IntClear(UART0, USART_IF_RXDATAV);//Most kivételesen nem kell
+      //USART_Tx(UART0,lastcharacter);
 
 }
