@@ -130,13 +130,17 @@ void snakedirection(char newdir){
   //head direction
   if (newdir == 'j')
     {
-     snake.dir--;
+     snake.dir++;
      snake.dir%=4;
     }
   if(newdir == 'b')
     {
-      snake.dir++;
-      snake.dir%=4;
+      if(snake.dir==RIGHT){
+          snake.dir=UP;
+      }
+      else{
+          snake.dir--;
+      }
     }
   return;
 }
@@ -163,6 +167,7 @@ bool isBitingItself(){
 }
 void KigyoKigyozas()
 {
+  //Azonos irany
     if(snake.dir==snake.prevdir)
       {
       switch (snake.dir){
@@ -222,7 +227,7 @@ void KigyoKigyozas()
     }
     if(snake.prevdir==UP){
         if(snake.dir==LEFT){//^<-
-            snake.snakeparts[0].x--;
+            //snake.snakeparts[0].x--;
             snake.snakeparts[0].y--;
         }
         if(snake.dir==RIGHT){//^->
@@ -244,14 +249,15 @@ void KigyoKigyozas()
 
         }
       else{
-        if(snake.snakeparts[0].x==7)
+          if(snake.snakeparts[0].x==0xFF)//alulcsordul mert unsigned
+                            {
+                              snake.snakeparts[0].x=6;
+                            }
+          if(snake.snakeparts[0].x>=7)
                   {
                     snake.snakeparts[0].x=0;
                   }
-                if(snake.snakeparts[0].x==0xFF)//alulcsordul mert unsigned
-                  {
-                    snake.snakeparts[0].x=6;
-                  }
+
       }
 
       //Ha hosszabbodik
@@ -343,7 +349,8 @@ void app_init(void)
   my_uart_init();
   SegmentLCD_Init(false);
   initsnek(&snake);
-  sl_sleeptimer_start_periodic_timer_ms(&timer, 500, app_timeout_callback, NULL, 0, SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
+  sl_sleeptimer_start_periodic_timer_ms(&timer, 400, app_timeout_callback, NULL, 0, SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
+  Display();
 
 }
 
@@ -359,6 +366,7 @@ void app_process_action(void)
  ******************************************************************************/
 //ezt csinálja minden egyes ticken
 void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
+  HasReceivedDirChange = false;
   if(isBitingItself())
     {
       EndOfGame();
@@ -371,7 +379,9 @@ void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
   }
 }
 void UART0_RX_IRQHandler(void){
-  lastcharacter = USART_RxDataGet(UART0);
-  USART_Tx(UART0,lastcharacter);
+
+      lastcharacter = USART_RxDataGet(UART0);
+      USART_Tx(UART0,lastcharacter);
   //USART_IntClear(UART0, USART_IF_RXDATAV);//Most kivételesen nem kell
+
 }
