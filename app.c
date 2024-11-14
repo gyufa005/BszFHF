@@ -117,21 +117,11 @@ volatile char lastcharacter;
 Position_t food;
 Snake snake;
 uint8_t score = 0;
-
+int isDotOn=0;
 
 /***************************************************************************//**
  * Functions
  ******************************************************************************/
-void ClearDisplay(){
-  //Lower Display clear
-      for (uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++) {
-          lowerCharSegments[i].raw = 0;  //
-      }
-  //Upper Display clear
-      for (uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_UPPER_CHARS; i++) {
-                upperCharSegments[i].raw = 0;  //
-}
-}
 
 void snakedirection(char newdir){
   //head direction
@@ -163,7 +153,7 @@ bool isFoodEaten() {
 }
 bool isBitingItself(){
   for(int i=0;i<snake.snakelength;i++){
-      if(snake.snakeparts[0]==snake.snakeparts[i])
+      if(snake.snakeparts[0].y==snake.snakeparts[i].y&&snake.snakeparts[0].x==snake.snakeparts[i].x)
         return true;
   }
   return false;
@@ -215,14 +205,67 @@ void KigyoKigyozas(){
 /***************************************************************************//**
  * Display functions.
  ******************************************************************************/
+void ClearDisplay(){
+  //Lower Display clear
+      for (uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_LOWER_CHARS; i++) {
+          lowerCharSegments[i].raw = 0;  //
+      }
+  //Upper Display clear
+      for (uint8_t i = 0; i < SEGMENT_LCD_NUM_OF_UPPER_CHARS; i++) {
+                upperCharSegments[i].raw = 0;  //
+}
+}
 
 
 void EndOfGame(){
-  //Tizedes pontok villognak.
+  //Tizedes pontok villognak. (minden órajelnél negáljuk)
+  if(isDotOn){
+      isDotOn=0;
+  }
+  else {
+    isDotOn = 1;
+  }
+  SegmentLCD_Symbol(LCD_SYMBOL_DP2, isDotOn);
+  SegmentLCD_Symbol(LCD_SYMBOL_DP3, isDotOn);
+  SegmentLCD_Symbol(LCD_SYMBOL_DP4, isDotOn);
+  SegmentLCD_Symbol(LCD_SYMBOL_DP5, isDotOn);
+  SegmentLCD_Symbol(LCD_SYMBOL_DP6, isDotOn);
 
 }
 void DisplayScore(int score){
+  ClearDisplay();
   SegmentLCD_Number(score);
+}
+void DisplayPos(Position_t pos){
+  if(pos.x == 7){
+      switch(pos.y){
+        case 1:lowerCharSegments[6].c = true;break;
+        case 3:lowerCharSegments[6].b = true;break;
+      }
+  }
+  else {
+      switch(pos.y){
+        case 0:
+                lowerCharSegments[pos.x].d = true; break;
+              case 1:
+                lowerCharSegments[pos.x].e = true; break;
+              case 2:
+                lowerCharSegments[pos.x].g = true;
+                lowerCharSegments[pos.x].m = true; break;
+              case 3:
+                lowerCharSegments[pos.x].f = true; break;
+              case 4:
+                lowerCharSegments[pos.x].a = true; break;
+              default: break;
+      }
+  }
+}
+void Display(){
+  DiplayScore(score);
+  DisplayPos(food);
+  for(int i=0;i<snake.snakelength;i++){
+      DisplayPos(snake.snakeparts[i]);
+  }
 }
 void app_init(void)
 {
