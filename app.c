@@ -48,7 +48,7 @@ typedef enum {RIGHT,DOWN,LEFT,UP} Direction;
 //Snek
 typedef struct {
 uint8_t snakelength;
-Position_t  snakeparts[37]; //ennél biztos nem hosszabb
+Position_t  snakeparts[38]; //ennél biztos nem hosszabb
 Direction dir;//fejének az iránya
 Direction prevdir;//mozgás logikához
 }Snake;
@@ -61,6 +61,8 @@ void initsnek(Snake* snake){
   snake->snakelength = 1;
   snake->snakeparts[0].x = 0;
   snake->snakeparts[0].y = 2;
+  snake->snakeparts[1].x = 6;//Láthatatlan farok, hogy lehessen erre állitani az új részeket.
+  snake->snakeparts[1].y = 2;
   snake->dir = RIGHT;
   snake->prevdir = RIGHT;
 }
@@ -120,6 +122,7 @@ Position_t food;
 Snake snake;
 uint8_t score = 0;
 int isDotOn=0;
+
 
 /***************************************************************************//**
  * Functions
@@ -262,9 +265,9 @@ void KigyoKigyozas()
       //Ha hosszabbodik
       if(isFoodEaten())
                   {
-                    snake.snakeparts[snake.snakelength]=snake.snakeparts[snake.snakelength-1];
                     snake.snakelength++;
-                    for(int i = snake.snakelength-2;i>0;i--)
+                    snake.snakeparts[snake.snakelength]=snake.snakeparts[snake.snakelength-1];
+                    for(int i = snake.snakelength-1;i>0;i--)
                                   {
                             snake.snakeparts[i]=snake.snakeparts[i-1];
                         }
@@ -272,10 +275,12 @@ void KigyoKigyozas()
                     placeFood();
                   }
       else
-                  for(int i = snake.snakelength-1;i>0;i--)
+        {
+                  for(int i = snake.snakelength;i>0;i--)
                                 {
                                     snake.snakeparts[i]=snake.snakeparts[i-1];
                                 }
+        }
 }
 /***************************************************************************//**
  * Display functions.
@@ -365,16 +370,16 @@ void app_process_action(void)
  ******************************************************************************/
 //ezt csinálja minden egyes ticken
 void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
-  if(isBitingItself())
+  /*if(isBitingItself())
     {
       EndOfGame();
     }
-  else{
+  else{*/
       snakedirection(lastcharacter);
       lastcharacter = '0';
       KigyoKigyozas();
       Display();
-  }
+  //}
 }
 void UART0_RX_IRQHandler(void){
 
