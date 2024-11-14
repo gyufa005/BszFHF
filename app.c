@@ -47,7 +47,7 @@ typedef struct {
 typedef enum {RIGHT,DOWN,LEFT,UP} Direction;
 //Snek
 typedef struct {
-uint8_t snakelength;
+int16_t snakelength;
 Position_t  snakeparts[38]; //ennél biztos nem hosszabb
 Direction dir;//fejének az iránya
 Direction prevdir;//mozgás logikához
@@ -121,7 +121,7 @@ volatile char lastcharacter;
 Position_t food;
 Snake snake;
 uint8_t score = 0;
-int isDotOn=0;
+volatile int isDotOn=0;
 
 
 /***************************************************************************//**
@@ -162,7 +162,7 @@ bool isFoodEaten() {
   return retval;
 }
 bool isBitingItself(){
-  for(int i=1;i<snake.snakelength;i++){
+  for(int i=2;i<snake.snakelength;i++){
       if(snake.snakeparts[0].y==snake.snakeparts[i].y&&snake.snakeparts[0].x==snake.snakeparts[i].x)
         return true;
   }
@@ -170,6 +170,7 @@ bool isBitingItself(){
 }
 void KigyoKigyozas()
 {
+    Position_t tailtarget = snake.snakeparts[snake.snakelength-1];
   //Azonos irany
     if(snake.dir==snake.prevdir)
       {
@@ -261,26 +262,33 @@ void KigyoKigyozas()
                   }
 
       }
+//X lépett
 
-      //Ha hosszabbodik
-      if(isFoodEaten())
-                  {
-                    snake.snakelength++;
-                    snake.snakeparts[snake.snakelength]=snake.snakeparts[snake.snakelength-1];
-                    for(int i = snake.snakelength-1;i>0;i--)
-                                  {
+
+      //Ha hosszabbodott máshogy kell léptetni a többi részét
+
+      if(isFoodEaten()){
+          snake.snakeparts[snake.snakelength]=tailtarget;
+          score++;
+          placeFood();
+          snake.snakelength++;
+         for(int i = snake.snakelength-2;i>0;i--)
+             {
                             snake.snakeparts[i]=snake.snakeparts[i-1];
-                        }
-                    score++;
-                    placeFood();
-                  }
+             }
+      }
       else
-        {
+      {
                   for(int i = snake.snakelength;i>0;i--)
                                 {
                                     snake.snakeparts[i]=snake.snakeparts[i-1];
                                 }
-        }
+      }
+
+
+
+
+
 }
 /***************************************************************************//**
  * Display functions.
@@ -298,14 +306,14 @@ void ClearDisplay(){
 
 
 void EndOfGame(){
-  //Tizedes pontok villognak. (minden órajelnél negáljuk)
   if(isDotOn){
-      isDotOn=0;
-  }
-  else {
-    isDotOn = 1;
-  }
-  SegmentLCD_Symbol(LCD_SYMBOL_DP2, isDotOn);
+          isDotOn=0;
+      }
+      else {
+        isDotOn = 1;
+      }
+  //Tizedes pontok villognak. (minden órajelnél negáljuk)
+    SegmentLCD_Symbol(LCD_SYMBOL_DP2, isDotOn);
   SegmentLCD_Symbol(LCD_SYMBOL_DP3, isDotOn);
   SegmentLCD_Symbol(LCD_SYMBOL_DP4, isDotOn);
   SegmentLCD_Symbol(LCD_SYMBOL_DP5, isDotOn);
@@ -370,16 +378,16 @@ void app_process_action(void)
  ******************************************************************************/
 //ezt csinálja minden egyes ticken
 void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
-  /*if(isBitingItself())
-    {
+
+  if(isBitingItself()){
       EndOfGame();
-    }
-  else{*/
+  }
+  else{
       snakedirection(lastcharacter);
       lastcharacter = '0';
       KigyoKigyozas();
       Display();
-  //}
+  }
 }
 void UART0_RX_IRQHandler(void){
 
