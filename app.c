@@ -149,11 +149,11 @@ void snakedirection(char newdir){
 }
 
 void placeFood() {
-    food.y = rand() % GRID_HEIGHT;
+    food.y = (uint8_t)rand() % GRID_HEIGHT;
       if(food.y==1||food.y==3)    //ha fuggoleges
-        food.x = rand() % GRID_WIDTH;
+        food.x = (uint8_t)rand() % GRID_WIDTH;
       else
-        food.x = rand() % GRID_WIDTH-1;
+        food.x = (uint8_t)rand() % GRID_WIDTH-1;
 
 }
 bool isFoodEaten() {
@@ -362,7 +362,7 @@ void app_init(void)
   SegmentLCD_Init(false);
   initsnek(&snake);
   sl_sleeptimer_start_periodic_timer_ms(&timer, 400, app_timeout_callback, NULL, 0, SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
-  Display();
+  //Display();
 
 }
 
@@ -385,8 +385,9 @@ void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
   else{
       snakedirection(lastcharacter);
       lastcharacter = '0';
-      KigyoKigyozas();
       Display();
+      KigyoKigyozas();
+
   }
 }
 void UART0_RX_IRQHandler(void){
