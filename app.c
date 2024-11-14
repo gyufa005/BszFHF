@@ -231,25 +231,28 @@ void KigyoKigyozas()
     }
 
       //Meg kell nézni, hogy ha a fej eléri a szélét a pályának, akkor
-      if(!(snake.snakeparts[0].y==1||snake.snakeparts[0].y==3))//Ha vizszintesen van
+      if((snake.snakeparts[0].y==1)||(snake.snakeparts[0].y==3)||(snake.snakeparts[0].y==5)||(snake.snakeparts[0].y==0xFF))//Ha vizszintesen van
         {
+          if(snake.snakeparts[0].y==5)
+                  {
+                    snake.snakeparts[0].y=1;
+                  }
+                if(snake.snakeparts[0].y==0xFF)
+                  {
+                    snake.snakeparts[0].y=3;
+                  }
+
+        }
+      else{
         if(snake.snakeparts[0].x==7)
-          {
-            snake.snakeparts[0].x=0;
-          }
-        if(snake.snakeparts[0].x==0xFF)//alulcsordul mert unsigned
-          {
-            snake.snakeparts[0].x=6;
-          }
-        }
-      if(snake.snakeparts[0].y==5)
-        {
-          snake.snakeparts[0].y=1;
-        }
-      if(snake.snakeparts[0].y==0xFF)
-        {
-          snake.snakeparts[0].y=3;
-        }
+                  {
+                    snake.snakeparts[0].x=0;
+                  }
+                if(snake.snakeparts[0].x==0xFF)//alulcsordul mert unsigned
+                  {
+                    snake.snakeparts[0].x=6;
+                  }
+      }
 
       //Ha hosszabbodik
       if(isFoodEaten())
