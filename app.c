@@ -266,6 +266,7 @@ void Display(){
   for(int i=0;i<snake.snakelength;i++){
       DisplayPos(snake.snakeparts[i]);
   }
+  SegmentLCD_LowerSegments(lowerCharSegments);
 }
 void app_init(void)
 {
