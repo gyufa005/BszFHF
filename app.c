@@ -32,6 +32,8 @@
 #include "em_usart.h"
 #include <stdlib.h>
 #include "sl_sleeptimer.h"
+//Random
+#include "em_adc.h"
 
 
 #define GRID_WIDTH 8
@@ -43,6 +45,7 @@ typedef struct {
   uint8_t x;
   uint8_t y;
 }Position_t;
+
 
 typedef enum {RIGHT,DOWN,LEFT,UP} Direction;
 //Snek
@@ -110,7 +113,45 @@ UART0->ROUTE |= UART_ROUTE_TXPEN | UART_ROUTE_RXPEN;
 volatile char lastcharacter = '0';
 sl_sleeptimer_timer_handle_t timer;
 static void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data);
+/***************************************************************************//**
+ * Random Number Generator
+ ******************************************************************************/
+void initADC ()
+{
 
+  //INIT
+    // Enable ADC0 clock
+    CMU_ClockEnable(cmuClock_ADC0, true);
+
+    // Declare init structures
+    ADC_Init_TypeDef init = ADC_INIT_DEFAULT;
+    ADC_InitSingle_TypeDef initSingle = ADC_INITSINGLE_DEFAULT;
+
+    // Modify init structures and initialize
+    init.prescale = ADC_PrescaleCalc(7000000, 0);
+
+    initSingle.diff       = false;        // single ended
+    initSingle.reference  = adcRef2V5;    // internal 2.5V reference
+    initSingle.resolution = adcRes12Bit;  // 12-bit resolution
+
+    // Select ADC input
+    initSingle.input = adcSingleInputTemp;
+    init.timebase = ADC_TimebaseCalc(0);
+
+    ADC_Init(ADC0, &init);
+    ADC_InitSingle(ADC0, &initSingle);
+}
+int startADC (void)
+{
+    /*Start ADC conversion*/
+    ADC_Start(ADC0, adcStartSingle);
+    /*Wait for conversion to be complete*/
+    while(ADC0->STATUS & ADC_STATUS_SINGLEACT);
+    /*Get ADC result*/
+    int x = ADC_DataSingleGet(ADC0);
+
+    return x;
+}
 
 /***************************************************************************//**
  * Globals
@@ -149,11 +190,13 @@ void snakedirection(char newdir){
 }
 
 void placeFood() {
-    food.y = (uint8_t)rand() % GRID_HEIGHT;
+  int temp = abs(startADC());
+  temp%=16;
+    food.y = temp % GRID_HEIGHT;
       if(food.y==1||food.y==3)    //ha fuggoleges
-        food.x = (uint8_t)rand() % GRID_WIDTH;
+        food.x = temp % GRID_WIDTH;
       else
-        food.x = (uint8_t)rand() % GRID_WIDTH-1;
+        food.x = temp % GRID_WIDTH-1;
 
 }
 bool isFoodEaten() {
@@ -359,6 +402,7 @@ void Display(){
 }
 void app_init(void)
 {
+  initADC();
   my_uart_init();
   SegmentLCD_Init(false);
   initsnek(&snake);
