@@ -171,7 +171,23 @@
         </folder>
       </folder>
       <folder name="emlib">
+        <folder name="src">
+          <file name="em_adc.c" uri="studio:/sdk/platform/emlib/src/em_adc.c"/>
+          <file name="em_cmu.c" uri="studio:/sdk/platform/emlib/src/em_cmu.c"/>
+          <file name="em_core.c" uri="studio:/sdk/platform/emlib/src/em_core.c"/>
+          <file name="em_dma.c" uri="studio:/sdk/platform/emlib/src/em_dma.c"/>
+          <file name="em_emu.c" uri="studio:/sdk/platform/emlib/src/em_emu.c"/>
+          <file name="em_gpio.c" uri="studio:/sdk/platform/emlib/src/em_gpio.c"/>
+          <file name="em_lcd.c" uri="studio:/sdk/platform/emlib/src/em_lcd.c"/>
+          <file name="em_leuart.c" uri="studio:/sdk/platform/emlib/src/em_leuart.c"/>
+          <file name="em_msc.c" uri="studio:/sdk/platform/emlib/src/em_msc.c"/>
+          <file name="em_rtc.c" uri="studio:/sdk/platform/emlib/src/em_rtc.c"/>
+          <file name="em_system.c" uri="studio:/sdk/platform/emlib/src/em_system.c"/>
+          <file name="em_timer.c" uri="studio:/sdk/platform/emlib/src/em_timer.c"/>
+          <file name="em_usart.c" uri="studio:/sdk/platform/emlib/src/em_usart.c"/>
+        </folder>
         <folder name="inc">
+          <file name="em_adc.h" uri="studio:/sdk/platform/emlib/inc/em_adc.h"/>
           <file name="em_chip.h" uri="studio:/sdk/platform/emlib/inc/em_chip.h"/>
           <file name="em_cmu.h" uri="studio:/sdk/platform/emlib/inc/em_cmu.h"/>
           <file name="em_cmu_compat.h" uri="studio:/sdk/platform/emlib/inc/em_cmu_compat.h"/>
@@ -195,20 +211,6 @@
           <file name="em_system_generic.h" uri="studio:/sdk/platform/emlib/inc/em_system_generic.h"/>
           <file name="em_timer.h" uri="studio:/sdk/platform/emlib/inc/em_timer.h"/>
           <file name="em_usart.h" uri="studio:/sdk/platform/emlib/inc/em_usart.h"/>
-        </folder>
-        <folder name="src">
-          <file name="em_cmu.c" uri="studio:/sdk/platform/emlib/src/em_cmu.c"/>
-          <file name="em_core.c" uri="studio:/sdk/platform/emlib/src/em_core.c"/>
-          <file name="em_dma.c" uri="studio:/sdk/platform/emlib/src/em_dma.c"/>
-          <file name="em_emu.c" uri="studio:/sdk/platform/emlib/src/em_emu.c"/>
-          <file name="em_gpio.c" uri="studio:/sdk/platform/emlib/src/em_gpio.c"/>
-          <file name="em_lcd.c" uri="studio:/sdk/platform/emlib/src/em_lcd.c"/>
-          <file name="em_leuart.c" uri="studio:/sdk/platform/emlib/src/em_leuart.c"/>
-          <file name="em_msc.c" uri="studio:/sdk/platform/emlib/src/em_msc.c"/>
-          <file name="em_rtc.c" uri="studio:/sdk/platform/emlib/src/em_rtc.c"/>
-          <file name="em_system.c" uri="studio:/sdk/platform/emlib/src/em_system.c"/>
-          <file name="em_timer.c" uri="studio:/sdk/platform/emlib/src/em_timer.c"/>
-          <file name="em_usart.c" uri="studio:/sdk/platform/emlib/src/em_usart.c"/>
         </folder>
       </folder>
     </folder>
