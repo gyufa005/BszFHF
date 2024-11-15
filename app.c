@@ -38,6 +38,9 @@
 
 #define GRID_WIDTH 8
 #define GRID_HEIGHT 5
+
+
+
 /***************************************************************************//**
  * Typedefek, Enumok
  ******************************************************************************/
@@ -55,6 +58,19 @@ Position_t  snakeparts[38]; //ennél biztos nem hosszabb
 Direction dir;//fejének az iránya
 Direction prevdir;//mozgás logikához
 }Snake;
+
+/***************************************************************************//**
+ * Globals
+ ******************************************************************************/
+SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
+SegmentLCD_UpperCharSegments_TypeDef upperCharSegments[SEGMENT_LCD_NUM_OF_UPPER_CHARS];
+volatile char lastcharacter;
+Position_t food;
+Snake snake;
+uint8_t score = 0;
+volatile int isDotOn=0;
+int geckoOn = 0;
+
 
 /***************************************************************************//**
  * Initialization
@@ -153,21 +169,20 @@ int startADC (void)
     return x;
 }
 
-/***************************************************************************//**
- * Globals
- ******************************************************************************/
-SegmentLCD_LowerCharSegments_TypeDef lowerCharSegments[SEGMENT_LCD_NUM_OF_LOWER_CHARS];
-SegmentLCD_UpperCharSegments_TypeDef upperCharSegments[SEGMENT_LCD_NUM_OF_UPPER_CHARS];
-volatile char lastcharacter;
-Position_t food;
-Snake snake;
-uint8_t score = 0;
-volatile int isDotOn=0;
-
 
 /***************************************************************************//**
  * Functions
  ******************************************************************************/
+void initSnekMove()
+{
+  Position_t tailtarget = snake.snakeparts[snake.snakelength-1];
+    snake.snakeparts[snake.snakelength]=tailtarget;
+              snake.snakelength++;
+             for(int i = snake.snakelength-2;i>0;i--)
+                 {
+                                snake.snakeparts[i]=snake.snakeparts[i-1];
+                 }
+ }
 
 void snakedirection(char newdir){
   snake.prevdir=snake.dir;
@@ -191,7 +206,7 @@ void snakedirection(char newdir){
 
 void placeFood() {
   int temp = abs(startADC());
-  temp%=16;
+  temp%=64;
     food.y = temp % GRID_HEIGHT;
       if(food.y==1||food.y==3)    //ha fuggoleges
         food.x = temp % GRID_WIDTH;
@@ -211,7 +226,7 @@ bool isBitingItself(){
   }
   return false;
 }
-void KigyoKigyozas()
+void SnakeMove()
 {
   //Másolat ha kéne felfűzni új elemet
     Position_t tailtarget = snake.snakeparts[snake.snakelength-1];
@@ -240,19 +255,12 @@ void KigyoKigyozas()
     if(snake.prevdir==RIGHT)
       {//
       if(snake.dir==UP){//->^
-          //if(!(snake.snakeparts[0].x==6))
-          {
               snake.snakeparts[0].x++;
-          }
-
-          snake.snakeparts[0].y--;
+              snake.snakeparts[0].y--;
       }
       if(snake.dir==DOWN){//->ˇ
-          //if(!(snake.snakeparts[0].x==6))
-          {
               snake.snakeparts[0].x++;
-          }
-          snake.snakeparts[0].y++;
+              snake.snakeparts[0].y++;
     }
     }
     if(snake.prevdir==DOWN){
@@ -315,6 +323,9 @@ void KigyoKigyozas()
           snake.snakeparts[snake.snakelength]=tailtarget;
           score++;
           placeFood();
+          geckoOn = 1;
+          SegmentLCD_Symbol(LCD_SYMBOL_GECKO, geckoOn);
+          geckoOn = 0;
           snake.snakelength++;
          for(int i = snake.snakelength-2;i>0;i--)
              {
@@ -400,6 +411,10 @@ void Display(){
   }
   SegmentLCD_LowerSegments(lowerCharSegments);
 }
+/***************************************************************************//**
+ * App Initialization
+ ******************************************************************************/
+
 void app_init(void)
 {
   initADC();
@@ -407,8 +422,8 @@ void app_init(void)
   SegmentLCD_Init(false);
   initsnek(&snake);
   sl_sleeptimer_start_periodic_timer_ms(&timer, 500, app_timeout_callback, NULL, 0, SL_SLEEPTIMER_NO_HIGH_PRECISION_HF_CLOCKS_REQUIRED_FLAG);
-  //Display();
-
+  initSnekMove();
+  placeFood();
 }
 
 /***************************************************************************//**
@@ -431,7 +446,8 @@ void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
       snakedirection(lastcharacter);
       lastcharacter = '0';
       Display();
-      KigyoKigyozas();
+      SegmentLCD_Symbol(LCD_SYMBOL_GECKO, geckoOn);
+      SnakeMove();
 
   }
 }
