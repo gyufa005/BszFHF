@@ -226,6 +226,39 @@ bool isBitingItself(){
   }
   return false;
 }
+//Keresztbeharapja-e magát a kigyó
+bool isCrossBiting(){
+  if(snake.dir!=snake.prevdir){
+      return false;
+  }
+  else
+    {
+      //meg kell nézni hogy ha egyenesen megy, és jobbra, vagy balra kanyarodna akkor magába harapna-e
+
+      Direction OriginalPrevDir = snake.prevdir;
+
+      //jobbra kanyarodna
+      snake.prevdir = snake.dir;
+      snake.dir++;
+      snake.dir%=4;
+      SnakeMove();
+      if(isBitingItself())
+        return true;
+      //visszaállitás
+      snake.prevdir = snake.dir+=2;
+      snake.prevdir%=4;
+      //balra kanyarodna
+      snake.dir+=2;
+      snake.dir%=4;
+      SnakeMove();
+      if(isBitingItself())
+        return true;
+
+
+
+
+    }
+}
 void SnakeMove()
 {
   //Másolat ha kéne felfűzni új elemet
@@ -411,6 +444,12 @@ void Display(){
   }
   SegmentLCD_LowerSegments(lowerCharSegments);
 }
+/***************************************************************************//**
+ * Snake Automation
+ ******************************************************************************/
+
+
+
 /***************************************************************************//**
  * App Initialization
  ******************************************************************************/
