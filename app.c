@@ -219,131 +219,124 @@ bool isFoodEaten() {
   retval =(snake.snakeparts[0].x == food.x) && (snake.snakeparts[0].y == food.y);
   return retval;
 }
-bool isBitingItself(){
-  for(int i=2;i<snake.snakelength;i++){
-      if(snake.snakeparts[0].y==snake.snakeparts[i].y&&snake.snakeparts[0].x==snake.snakeparts[i].x)
+bool isBitingItself(Snake* snake){
+  for(int i=2;i<snake->snakelength;i++){
+      if(snake->snakeparts[0].y==snake->snakeparts[i]->y&&snake->snakeparts[0].x==snake->snakeparts[i].x)
         return true;
   }
   return false;
 }
 //Keresztbeharapja-e magát a kigyó
 bool isCrossBiting(){
-  if(snake.dir!=snake.prevdir){
-      return false;
-  }
-  else
-    {
-      //meg kell nézni hogy ha egyenesen megy, és jobbra, vagy balra kanyarodna akkor magába harapna-e
+  Snake simulatedSnake = snake;
 
-      Direction OriginalPrevDir = snake.prevdir;
+      // Jobbra kanyarodna
+      simulatedSnake.prevdir = simulatedSnake.dir;
+      simulatedSnake.dir = (simulatedSnake.dir + 1) % 4;  // kanyar jobbra
+      SnakeMove(&simulatedSnake);
+      if (isBitingItself(&simulatedSnake)) {
+          return true;
+      }
 
-      //jobbra kanyarodna
-      snake.prevdir = snake.dir;
-      snake.dir++;
-      snake.dir%=4;
-      SnakeMove();
-      if(isBitingItself())
-        return true;
-      //visszaállitás
-      snake.prevdir = snake.dir+=2;
-      snake.prevdir%=4;
-      //balra kanyarodna
-      snake.dir+=2;
-      snake.dir%=4;
-      SnakeMove();
-      if(isBitingItself())
-        return true;
+      // Balra kanyarodna
+      simulatedSnake = snake;
+      simulatedSnake.prevdir = simulatedSnake.dir;
+      simulatedSnake.dir = (simulatedSnake.dir + 3) % 4;  // balra
+      SnakeMove(&simulatedSnake);
+      if (isBitingItself(&simulatedSnake)) {
+          return true;
+      }
 
+      return false;  // No cross-biting detected
 
-
-
-    }
 }
-void SnakeMove()
+
+
+void SnakeMove(Snake * snake)
 {
   //Másolat ha kéne felfűzni új elemet
-    Position_t tailtarget = snake.snakeparts[snake.snakelength-1];
+    Position_t tailtarget = snake->snakeparts[snake->snakelength-1];
   //Azonos irany
-    if(snake.dir==snake.prevdir)
+    if(snake->dir==snake->prevdir)
       {
-      switch (snake.dir){
+      switch (snake->dir){
         case RIGHT:
           {
-            snake.snakeparts[0].x++;break;
+            snake->snakeparts[0].x++;break;
           }
         case DOWN:
           {
-            snake.snakeparts[0].y+=2;break;
+            snake->snakeparts[0].y+=2;break;
           }
         case LEFT:
           {
-            snake.snakeparts[0].x--;break;
+            snake->snakeparts[0].x--;break;
           }
         case UP:
           {
-            snake.snakeparts[0].y-=2;break;
+            snake->snakeparts[0].y-=2;break;
           }
       }
     }
-    if(snake.prevdir==RIGHT)
+    if(snake->prevdir==RIGHT)
       {//
-      if(snake.dir==UP){//->^
-              snake.snakeparts[0].x++;
-              snake.snakeparts[0].y--;
+      if(snake->dir==UP){//->^
+              snake->snakeparts[0].x++;
+              snake->snakeparts[0].y--;
       }
-      if(snake.dir==DOWN){//->ˇ
-              snake.snakeparts[0].x++;
-              snake.snakeparts[0].y++;
+      if(snake->dir==DOWN){//->ˇ
+              snake->snakeparts[0].x++;
+              snake->snakeparts[0].y++;
     }
     }
-    if(snake.prevdir==DOWN){
-        if(snake.dir==LEFT){//ˇ<-
-            snake.snakeparts[0].x--;
-            snake.snakeparts[0].y++;
+    if(snake->prevdir==DOWN){
+        if(snake->dir==LEFT){//ˇ<-
+            snake->snakeparts[0].x--;
+            snake->snakeparts[0].y++;
         }
-        if(snake.dir==RIGHT){//ˇ->
-            snake.snakeparts[0].y++;
-        }
-    }
-    if(snake.prevdir==LEFT){
-        if(snake.dir==DOWN){//<-ˇ
-            snake.snakeparts[0].y++;
-        }
-        if(snake.dir==UP){//<-^
-            snake.snakeparts[0].y--;
+        if(snake->dir==RIGHT){//ˇ->
+            snake->snakeparts[0].y++;
         }
     }
-    if(snake.prevdir==UP){
-        if(snake.dir==LEFT){//^<-
-            snake.snakeparts[0].x--;
-            snake.snakeparts[0].y--;
+    if(snake->prevdir==LEFT){
+        if(snake->dir==DOWN){//<-ˇ
+            snake->snakeparts[0].y++;
         }
-        if(snake.dir==RIGHT){//^->
-            snake.snakeparts[0].y--;
+        if(snake->dir==UP){//<-^
+            snake->snakeparts[0].y--;
+        }
+    }
+    if(snake->prevdir==UP){
+        if(snake->dir==LEFT){//^<-
+            snake->snakeparts[0].x--;
+            snake->snakeparts[0].y--;
+        }
+        if(snake->dir==RIGHT){//^->
+            snake->snakeparts[0].y--;
         }
     }
 
       //Meg kell nézni, hogy ha a fej eléri a szélét a pályának, akkor
-      if((snake.snakeparts[0].y==1)||(snake.snakeparts[0].y==3)||(snake.snakeparts[0].y==5)||(snake.snakeparts[0].y==0xFF))//Ha vizszintesen van
+      if((snake->snakeparts[0].y==1)||(snake->snakeparts[0].y==3)||(snake->snakeparts[0].y==5)||(snake->snakeparts[0].y==0xFF))//Ha vizszintesen van
         {
-          if(snake.snakeparts[0].y==5)
+          if(snake->snakeparts[0].y==5)
                   {
-                    snake.snakeparts[0].y=1;
+                    snake->snakeparts[0].y=1;
                   }
-                if(snake.snakeparts[0].y==0xFF)
+                if(snake->snakeparts[0].y==0xFF)
                   {
-                    snake.snakeparts[0].y=3;
+                    snake->snakeparts[0].y=3;
                   }
 
         }
       else{
-          if(snake.snakeparts[0].x==0xFF)//alulcsordul mert unsigned
+          if(snake->snakeparts[0].x==0xFF)//alulcsordul mert unsigned
                             {
-                              snake.snakeparts[0].x=6;
+                              snake->snakeparts[0].x=6;
                             }
-          if(snake.snakeparts[0].x>=7)
+          if(snake->snakeparts[0].x>=7)
                   {
-                    snake.snakeparts[0].x=0;
+                    snake->snakeparts[0].x=0;
                   }
 
       }
@@ -353,23 +346,23 @@ void SnakeMove()
       //Ha hosszabbodott máshogy kell léptetni a többi részét
 
       if(isFoodEaten()){
-          snake.snakeparts[snake.snakelength]=tailtarget;
+          snake->snakeparts[snake->snakelength]=tailtarget;
           score++;
           placeFood();
           geckoOn = 1;
           SegmentLCD_Symbol(LCD_SYMBOL_GECKO, geckoOn);
           geckoOn = 0;
-          snake.snakelength++;
-         for(int i = snake.snakelength-2;i>0;i--)
+          snake->snakelength++;
+         for(int i = snake->snakelength-2;i>0;i--)
              {
-                            snake.snakeparts[i]=snake.snakeparts[i-1];
+                            snake->snakeparts[i]=snake->snakeparts[i-1];
              }
       }
       else
       {
-                  for(int i = snake.snakelength;i>0;i--)
+                  for(int i = snake->snakelength;i>0;i--)
                                 {
-                                    snake.snakeparts[i]=snake.snakeparts[i-1];
+                                    snake->snakeparts[i]=snake->snakeparts[i-1];
                                 }
       }
 
@@ -478,7 +471,7 @@ void app_process_action(void)
 //ezt csinálja minden egyes ticken
 void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
 
-  if(isBitingItself()){
+  if(isBitingItself(&snake)){
       EndOfGame();
   }
   else{
@@ -486,7 +479,7 @@ void app_timeout_callback(sl_sleeptimer_timer_handle_t* timer,void* data){
       lastcharacter = '0';
       Display();
       SegmentLCD_Symbol(LCD_SYMBOL_GECKO, geckoOn);
-      SnakeMove();
+      SnakeMove(&snake);
 
   }
 }
